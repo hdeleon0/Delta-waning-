@@ -1,4 +1,7 @@
-function [N_ill,Who_Vec,Who_ill,Who_not_ill,Tt]=corona_MC_hilla_deleon(N,R,a1_trans,a1_infect,a2_infect)
+function [N_ill,Who_Vec,Who_ill,Who_not_ill,Tt]=corona_MC_hilla_deleon(N,R,a1_trans,a1_infect,a2_infect,a3_infect)
+%a1_infec - the chance to get infected after 10 days from the first dose
+%a2_infec - the chance to get infected after 21 days from the first dose
+%a3_infec - the chance to get infected after 180 days from the first dose
 ratio=(1.25./sqrt(R));
 ages=[100,85,75,63,36];
 load('Vac.mat')
@@ -308,12 +311,16 @@ for n=1:300
             
             if ~isempty(Who_Vec>0)
                
+                temp0=find((n-Who_Vec(:,2)>=180));
+                [val,pos]=intersect(Who_not_ill,Who_Vec(temp0,1));
+                map(pos)=a2_infect;
                 
-                temp1=find((n-Who_Vec(:,2)>14));
+             
+                temp1=find((n-Who_Vec(:,2)>21)&(n-Who_Vec(:,2)<180));
                 [val,pos]=intersect(Who_not_ill,Who_Vec(temp1,1));
-                map(pos)=a2_infect-0.2;
+                map(pos)=a2_infect;
                 
-                temp2=find((n-Who_Vec(:,2))>10 & (n-Who_Vec(:,2))<=14);
+                temp2=find((n-Who_Vec(:,2))>10 & (n-Who_Vec(:,2))<=21);
                 [val,pos]=intersect(Who_not_ill,Who_Vec(temp2,1));
                 map(pos)=a1_infect;
                 
